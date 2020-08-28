@@ -1,0 +1,21 @@
+uuid: 1ad1f0e6-bba6-44fe-ab24-2cc20b8ba940
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.license.field_datetime
+    - licensing.license_type.default
+  module:
+    - datetime
+id: license.default.field_datetime
+field_name: field_datetime
+entity_type: license
+bundle: default
+label: Datetime
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

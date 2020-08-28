@@ -1,0 +1,90 @@
+uuid: 2305a2dd-dba7-4a01-ab18-a04b68bfa5aa
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.license.default.field_active
+    - field.field.license.default.field_datetime
+    - field.field.license.default.field_education
+    - field.field.license.default.field_standalone
+    - field.field.license.default.field_teacher_user
+    - field.field.license.default.field_terms
+    - licensing.license_type.default
+  module:
+    - datetime
+    - options
+    - user
+id: license.default.default
+targetEntityType: license
+bundle: default
+mode: default
+content:
+  field_active:
+    weight: 5
+    label: hidden
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_datetime:
+    weight: 7
+    label: hidden
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_education:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_standalone:
+    weight: 6
+    label: hidden
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_teacher_user:
+    weight: 2
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_terms:
+    weight: 4
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  licensed_entity:
+    label: hidden
+    type: entity_reference_entity_id
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  user_id:
+    label: hidden
+    type: author
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  expires_automatically: true
+  expiry: true
+  status: true

@@ -1,0 +1,21 @@
+uuid: ebd9e9db-3394-4352-aea5-6eb02645c22d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.license.field_terms
+    - licensing.license_type.default
+  module:
+    - options
+id: license.default.field_terms
+field_name: field_terms
+entity_type: license
+bundle: default
+label: Terms
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

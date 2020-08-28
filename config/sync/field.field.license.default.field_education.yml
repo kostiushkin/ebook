@@ -1,0 +1,21 @@
+uuid: a3b3867a-d868-4046-b3e7-5841f4e86b9b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.license.field_education
+    - licensing.license_type.default
+  module:
+    - options
+id: license.default.field_education
+field_name: field_education
+entity_type: license
+bundle: default
+label: Education
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

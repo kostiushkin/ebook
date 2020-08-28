@@ -1,0 +1,32 @@
+uuid: f80da88d-ac55-447a-90cc-3ef0f4771b4d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.license.field_teacher_user
+    - licensing.license_type.default
+id: license.default.field_teacher_user
+field_name: field_teacher_user
+entity_type: license
+bundle: default
+label: 'Teacher User'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:user'
+  handler_settings:
+    include_anonymous: true
+    filter:
+      type: role
+      role:
+        teacher: teacher
+        administrator: '0'
+        student: '0'
+    target_bundles: null
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference

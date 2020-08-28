@@ -1,0 +1,30 @@
+uuid: af41f79a-5f53-4e3f-99d7-ef44a509a2c0
+langcode: en
+status: true
+dependencies:
+  module:
+    - licensing
+    - options
+id: license.field_education
+field_name: field_education
+entity_type: license
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: Basic
+      label: Basic
+    -
+      value: Essential
+      label: Essential
+    -
+      value: Educator
+      label: Educator
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

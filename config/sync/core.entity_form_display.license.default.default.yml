@@ -1,0 +1,101 @@
+uuid: 1fd35a68-e934-4ef4-8922-0b628854e258
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.license.default.field_active
+    - field.field.license.default.field_datetime
+    - field.field.license.default.field_education
+    - field.field.license.default.field_standalone
+    - field.field.license.default.field_teacher_user
+    - field.field.license.default.field_terms
+    - licensing.license_type.default
+  module:
+    - datetime
+id: license.default.default
+targetEntityType: license
+bundle: default
+mode: default
+content:
+  expires_automatically:
+    type: boolean_checkbox
+    weight: 3
+    settings:
+      display_label: true
+    region: content
+    third_party_settings: {  }
+  expiry:
+    type: datetime_timestamp
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_active:
+    weight: 8
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_datetime:
+    weight: 10
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_education:
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_standalone:
+    weight: 9
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_teacher_user:
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_terms:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  licensed_entity:
+    type: entity_reference_autocomplete
+    weight: 1
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+      match_limit: 10
+    region: content
+    third_party_settings: {  }
+  status:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  user_id:
+    type: entity_reference_autocomplete
+    weight: 1
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+      match_limit: 10
+    region: content
+    third_party_settings: {  }
+hidden: {  }

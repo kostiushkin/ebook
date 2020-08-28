@@ -1,0 +1,23 @@
+uuid: 93edd923-f6e1-43e6-95e3-1aaa19a14484
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.license.field_standalone
+    - licensing.license_type.default
+id: license.default.field_standalone
+field_name: field_standalone
+entity_type: license
+bundle: default
+label: Standalone
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,36 @@
+uuid: 3a728bb7-097f-4899-b9f5-7c120bf23fbf
+langcode: en
+status: true
+dependencies:
+  module:
+    - licensing
+    - options
+id: license.field_terms
+field_name: field_terms
+entity_type: license
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '7 days'
+      label: '7 days'
+    -
+      value: '2 weeks'
+      label: '2 weeks'
+    -
+      value: '1 month'
+      label: '1 month'
+    -
+      value: '6 months'
+      label: '6 months'
+    -
+      value: '2 years'
+      label: '2 years'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
