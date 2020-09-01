@@ -1,0 +1,17 @@
+uuid: c097c761-7837-421f-a15f-69cb45426f2d
+langcode: en
+status: true
+dependencies:
+  module:
+    - ebook
+    - serialization
+    - user
+id: get_request
+plugin_id: get_request
+granularity: method
+configuration:
+  GET:
+    supported_formats:
+      - json
+    supported_auth:
+      - cookie
