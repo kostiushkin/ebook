@@ -17,6 +17,7 @@ module:
   dblog: 0
   devel_generate: 0
   dynamic_page_cache: 0
+  ebook: 0
   editor: 0
   field: 0
   field_ui: 0
@@ -38,7 +39,10 @@ module:
   path_alias: 0
   quickedit: 0
   rdf: 0
+  rest: 0
+  restui: 0
   search: 0
+  serialization: 0
   shortcut: 0
   system: 0
   taxonomy: 0

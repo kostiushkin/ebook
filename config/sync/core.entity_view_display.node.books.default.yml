@@ -1,0 +1,29 @@
+uuid: 684e87fb-016c-480f-8996-450eaaba6ee4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.books.field_book
+    - node.type.books
+  module:
+    - user
+id: node.books.default
+targetEntityType: node
+bundle: books
+mode: default
+content:
+  field_book:
+    type: entity_reference_entity_view
+    weight: 102
+    label: above
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden: {  }
