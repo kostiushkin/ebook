@@ -17,30 +17,42 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class EbookResource extends ResourceBase {
   public function get($id) {
-    $status = 200;
-
-    if($id){
-      $license = \Drupal::entityTypeManager()->getStorage('license')->load($id);
-      $response = [
-        'id' => $license->id(),
-        'type' => $license->get('type')->getString(),
-        'uuid' => $license->get('uuid')->getString(),
-        'langcode' => $license->get('langcode')->getString(),
-        'name' => $license->get('name')->getString(),
-        'user_id' => $license->get('user_id')->getString(),
-        'status' => $license->get('status')->getString(),
-        'expires_automatically' => $license->get('expires_automatically')->getString(),
-        'expiry' => $license->get('expiry')->getString(),
-        'licensed_entity' => $license->get('licensed_entity')->getString(),
-        'created' => $license->get('created')->getString(),
-        'default_langcode' => $license->get('default_langcode')->getString(),
-        'field_active' => $license->get('field_active')->getString(),
-        'field_datetime' => $license->get('field_datetime')->getString(),
-        'field_education' => $license->get('field_education')->getString(),
-        'field_standalone' => $license->get('field_standalone')->getString(),
-        'field_teacher_user' => $license->get('field_teacher_user')->getValue(),
-        'field_terms' => $license->get('field_terms')->getString()
+    if (!empty($id)) {
+      $fields = [
+        'id',
+        'type',
+        'uuid',
+        'langcode',
+        'name',
+        'user_id',
+        'status',
+        'expires_automatically',
+        'expiry',
+        'licensed_entity',
+        'created',
+        'default_langcode',
+        'field_active',
+        'field_datetime',
+        'field_education',
+        'field_standalone',
+        'field_teacher_user',
+        'field_terms'
       ];
+      $license = \Drupal::entityTypeManager()->getStorage('license')->load($id);
+      if(!empty($license)) {
+        $status = 200;
+        foreach($fields as $field) {
+          if ($license->hasField($field) && !$license->get($field)->isEmpty()) {
+            $response[$field] = $license->get($field)->getString();
+          } else {
+            $status = 503;
+            $response = $this->t("Field with this id does`t exist");
+          }
+        }
+      } else {
+        $status = 503;
+        $response = $this->t("License with this id does`t exist");
+      }
     }
     return new JsonResponse($response, $status);
   }

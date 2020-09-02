@@ -1,6 +1,0 @@
-ebook.get:
-  path: 'get.json'
-  defaults: { _controller: '\Drupal\ebook\Controller\EbookController::ebook' }
-  methods:  [GET]
-  requirements:
-    _access: 'TRUE'
