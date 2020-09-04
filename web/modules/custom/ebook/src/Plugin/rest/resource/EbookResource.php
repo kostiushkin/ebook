@@ -2,7 +2,6 @@
 
 namespace Drupal\ebook\Plugin\rest\resource;
 
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,13 +20,6 @@ use \Drupal\Core\Entity\EntityTypeManager;
  */
 
 class EbookResource extends ResourceBase {
-  /**
-   * A current user instance.
-   *
-   * @var \Drupal\Core\Session\AccountProxyInterface
-   */
-  protected $currentUser;
-
   /**
    * The entity type manager.
    *
@@ -48,8 +40,6 @@ class EbookResource extends ResourceBase {
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
-   *   A current user instance.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
    *   Entity type manager.
    */
@@ -59,11 +49,9 @@ class EbookResource extends ResourceBase {
     $plugin_definition,
     array $serializer_formats,
     LoggerInterface $logger,
-    AccountProxyInterface $current_user,
     EntityTypeManager $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
     $this->entityTypeManager = $entity_type_manager;
-    $this->currentUser = $current_user;
   }
 
   /**
@@ -76,7 +64,6 @@ class EbookResource extends ResourceBase {
       $plugin_definition,
       $container->getParameter('serializer.formats'),
       $container->get('logger.factory')->get('dummy'),
-      $container->get('current_user'),
       $container->get('entity_type.manager')
     );
   }
@@ -126,14 +113,14 @@ class EbookResource extends ResourceBase {
           else {
             // Add error message and status "Service is unavailable"
             $status = 404;
-            $response = $this->t("The field is empty or there is no field in the license");
+            return new JsonResponse($this->t("The field: @field is empty or there is no field in the license", ['@field' => $field]), $status);
           }
         }
       }
       else {
         // Add error message and status "Service is unavailable"
         $status = 404;
-        $response = $this->t("License with this id does`t exist");
+        return new JsonResponse($this->t("License with this id does`t exist"), $status);
       }
     }
     return new JsonResponse($response, $status);
