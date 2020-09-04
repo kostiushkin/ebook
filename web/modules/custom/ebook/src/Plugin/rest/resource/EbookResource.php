@@ -20,8 +20,7 @@ use \Drupal\Core\Entity\EntityTypeManager;
  * )
  */
 
-class EbookResource extends ResourceBase
-{
+class EbookResource extends ResourceBase {
   /**
    * A current user instance.
    *
@@ -61,10 +60,8 @@ class EbookResource extends ResourceBase
     array $serializer_formats,
     LoggerInterface $logger,
     AccountProxyInterface $current_user,
-    EntityTypeManager $entity_type_manager)
-  {
+    EntityTypeManager $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
-
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
   }
@@ -72,8 +69,7 @@ class EbookResource extends ResourceBase
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
-  {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
       $plugin_id,
@@ -93,8 +89,7 @@ class EbookResource extends ResourceBase
    * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    *   Throws exception expected.
    */
-  public function get($id)
-  {
+  public function get($id) {
     if (!empty($id)) {
       // Fields array
       $fields = [
@@ -130,18 +125,17 @@ class EbookResource extends ResourceBase
           }
           else {
             // Add error message and status "Service is unavailable"
-            $status = 503;
-            $response = $this->t("Field with this id does`t exist");
+            $status = 404;
+            $response = $this->t("The field is empty or there is no field in the license");
           }
         }
       }
       else {
         // Add error message and status "Service is unavailable"
-        $status = 503;
+        $status = 404;
         $response = $this->t("License with this id does`t exist");
       }
     }
     return new JsonResponse($response, $status);
   }
-
 }
