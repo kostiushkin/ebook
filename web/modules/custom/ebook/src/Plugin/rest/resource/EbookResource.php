@@ -2,8 +2,12 @@
 
 namespace Drupal\ebook\Plugin\rest\resource;
 
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rest\Plugin\ResourceBase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use \Drupal\Core\Entity\EntityTypeManager;
 
 /**
  *
@@ -15,9 +19,84 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *   }
  * )
  */
-class EbookResource extends ResourceBase {
-  public function get($id) {
+
+class EbookResource extends ResourceBase
+{
+  /**
+   * A current user instance.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Constructs a new ListLicensesResource object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param array $serializer_formats
+   *   The available serialization formats.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   A logger instance.
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+   *   A current user instance.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Entity type manager.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    array $serializer_formats,
+    LoggerInterface $logger,
+    AccountProxyInterface $current_user,
+    EntityTypeManager $entity_type_manager)
+  {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+
+    $this->entityTypeManager = $entity_type_manager;
+    $this->currentUser = $current_user;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
+  {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->getParameter('serializer.formats'),
+      $container->get('logger.factory')->get('dummy'),
+      $container->get('current_user'),
+      $container->get('entity_type.manager')
+    );
+  }
+
+  /**
+   * Responds to GET requests.
+   *
+   * Returns a list of bundles for specified entity.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+   *   Throws exception expected.
+   */
+  public function get($id)
+  {
     if (!empty($id)) {
+      // Fields array
       $fields = [
         'id',
         'type',
@@ -38,22 +117,31 @@ class EbookResource extends ResourceBase {
         'field_teacher_user',
         'field_terms'
       ];
-      $license = \Drupal::entityTypeManager()->getStorage('license')->load($id);
-      if(!empty($license)) {
+      $license = $this->entityTypeManager->getStorage('license')->load($id);
+      // Check if license available
+      if (!empty($license)) {
+        // Return good status
         $status = 200;
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
+          // Check if fields available and check if fields not empty
           if ($license->hasField($field) && !$license->get($field)->isEmpty()) {
+            // Get values
             $response[$field] = $license->get($field)->getString();
-          } else {
+          }
+          else {
+            // Add error message and status "Service is unavailable"
             $status = 503;
             $response = $this->t("Field with this id does`t exist");
           }
         }
-      } else {
+      }
+      else {
+        // Add error message and status "Service is unavailable"
         $status = 503;
         $response = $this->t("License with this id does`t exist");
       }
     }
     return new JsonResponse($response, $status);
   }
+
 }
