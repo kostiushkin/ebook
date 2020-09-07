@@ -2,11 +2,13 @@
 
 namespace Drupal\ebook\Plugin\rest\resource;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\rest\Plugin\ResourceBase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use \Drupal\Core\Entity\EntityTypeManager;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -15,20 +17,29 @@ use \Drupal\Core\Entity\EntityTypeManager;
  *   label = @Translation("First get request"),
  *   uri_paths = {
  *     "canonical" = "/get-request/{id}",
+ *     "create" = "/rest/post"
  *   }
  * )
  */
 
 class EbookResource extends ResourceBase {
+
+  /**
+   * A current user instance.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
+
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
-   * Constructs a new ListLicensesResource object.
+   * Constructs a new EbookResource object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -40,8 +51,11 @@ class EbookResource extends ResourceBase {
    *   The available serialization formats.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager.
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+   *   A current user instance.
+   *
    */
   public function __construct(
     array $configuration,
@@ -49,8 +63,10 @@ class EbookResource extends ResourceBase {
     $plugin_definition,
     array $serializer_formats,
     LoggerInterface $logger,
-    EntityTypeManager $entity_type_manager) {
+    AccountProxyInterface $current_user,
+    EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
+    $this->currentUser = $current_user;
     $this->entityTypeManager = $entity_type_manager;
   }
 
@@ -64,6 +80,7 @@ class EbookResource extends ResourceBase {
       $plugin_definition,
       $container->getParameter('serializer.formats'),
       $container->get('logger.factory')->get('dummy'),
+      $container->get('current_user'),
       $container->get('entity_type.manager')
     );
   }
@@ -124,5 +141,46 @@ class EbookResource extends ResourceBase {
       }
     }
     return new JsonResponse($response, $status);
+  }
+
+  /**
+   * Responds to POST requests.
+   *
+   * @param $data
+   *    Data items
+   * @return JsonResponse
+   *    Return in JSON Format
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function post($data) {
+
+    // Use current user after pass authentication to validate access.
+    if (!$this->currentUser->hasPermission('administer site content')) {
+      // Display the default access denied page.
+      throw new AccessDeniedHttpException('Access Denied.');
+    }
+
+    // Check if data is empty
+    if (empty($data)) {
+      return new JsonResponse($this->t("Error. License is not created"), 404);
+    }
+
+    // Validation for required fields
+    if(array_key_exists("licensed_entity" ,$data) && array_key_exists("type" ,$data) ) {
+      // Get license storage
+      $storage = $this->entityTypeManager->getStorage('license');
+      // Create new license
+      $license = $storage->create($data);
+      // Save new license
+      $license->save();
+      $message = $this->t("New license created successfully");
+      return new JsonResponse($message, 200);
+    }
+    else {
+      $message = $this->t("Fields licensed_entity and type is required");
+      return new JsonResponse($message, 404);
+    }
   }
 }
