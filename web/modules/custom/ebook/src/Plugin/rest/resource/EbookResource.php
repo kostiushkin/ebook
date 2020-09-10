@@ -79,7 +79,7 @@ class EbookResource extends ResourceBase {
       $plugin_id,
       $plugin_definition,
       $container->getParameter('serializer.formats'),
-      $container->get('logger.factory')->get('dummy'),
+      $container->get('logger.factory')->get('ebook'),
       $container->get('current_user'),
       $container->get('entity_type.manager')
     );
@@ -144,43 +144,58 @@ class EbookResource extends ResourceBase {
   }
 
   /**
-   * Responds to POST requests.
+   * Create new license
    *
    * @param $data
    *    Data items
    * @return JsonResponse
    *    Return in JSON Format
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function post($data) {
-
     // Use current user after pass authentication to validate access.
-    if (!$this->currentUser->hasPermission('administer site content')) {
-      // Display the default access denied page.
-      throw new AccessDeniedHttpException('Access Denied.');
+    try {
+      if (!$this->currentUser->hasPermission('administer site content')) {
+        // Display the default access denied page.
+        throw new AccessDeniedHttpException('Access Denied.');
+      }
     }
-
+    catch (AccessDeniedHttpException $exception) {
+      return new JsonResponse($exception->getMessage(), 403);
+    }
     // Check if data is empty
     if (empty($data)) {
-      return new JsonResponse($this->t("Error. License is not created"), 404);
+      return new JsonResponse($this->t('Error. License is not created'), 406);
     }
-
     // Validation for required fields
-    if(array_key_exists("licensed_entity" ,$data) && array_key_exists("type" ,$data) ) {
+    if (!array_key_exists('licensed_entity' ,$data) && !array_key_exists('type' ,$data) ) {
+      $message = $this->t('Fields licensed_entity and type is required');
+      return new JsonResponse($message, 406);
+    }
+    // Validation for licensed entity
+    $license_entity = $data['licensed_entity'];
+    $entity = $this->entityTypeManager->getStorage('node')->load($license_entity);
+    if (!isset($entity)) {
+      $message = $this->t('Licencse entity not correct. You need to use a created entities');
+      return new JsonResponse($message, 406);
+    }
+    // Validation for license type
+    $type = $data['type'];
+    if ($type !== 'default' || empty($type)) {
+      $message = $this->t('Licencse type not correct. You need to use a default type');
+      return new JsonResponse($message, 406);
+    }
+    try {
       // Get license storage
       $storage = $this->entityTypeManager->getStorage('license');
       // Create new license
       $license = $storage->create($data);
       // Save new license
       $license->save();
-      $message = $this->t("New license created successfully");
+      $message = $this->t('New license created successfully');
       return new JsonResponse($message, 200);
     }
-    else {
-      $message = $this->t("Fields licensed_entity and type is required");
-      return new JsonResponse($message, 404);
+    catch (\Exception $exception) {
+      return new JsonResponse($exception->getMessage(), 406);
     }
   }
 }
