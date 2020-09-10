@@ -12,19 +12,19 @@ type: list_string
 settings:
   allowed_values:
     -
-      value: '7 days'
+      value: seven_days
       label: '7 days'
     -
-      value: '2 weeks'
+      value: two_weeks
       label: '2 weeks'
     -
-      value: '1 month'
+      value: one_month
       label: '1 month'
     -
-      value: '6 months'
+      value: six_months
       label: '6 months'
     -
-      value: '2 years'
+      value: two_years
       label: '2 years'
   allowed_values_function: ''
 module: options
