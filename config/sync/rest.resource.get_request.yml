@@ -6,18 +6,15 @@ dependencies:
     - basic_auth
     - ebook
     - serialization
-    - user
 id: get_request
 plugin_id: get_request
-granularity: method
+granularity: resource
 configuration:
-  GET:
-    supported_formats:
-      - json
-    supported_auth:
-      - cookie
-  POST:
-    supported_formats:
-      - json
-    supported_auth:
-      - basic_auth
+  methods:
+    - GET
+    - POST
+    - PATCH
+  formats:
+    - json
+  authentication:
+    - basic_auth
