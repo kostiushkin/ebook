@@ -204,4 +204,35 @@ class EbookResource extends ResourceBase {
       return new JsonResponse($message, 406);
     }
   }
+
+  /**
+   * @param $id
+   * @param $data
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function patch($id, $data){
+    $license = $this->entityTypeManager->getStorage('license')->load($id);
+    if (!empty($license)){
+      $license->set('type', $data['type']);
+      $license->set('langcode', $data['langcode']);
+      $license->set('status', $data['status']);
+      $license->set('expires_automatically', $data['expires_automatically']);
+      $license->set('expiry', $data['expiry']);
+      $license->set('licensed_entity', $data['licensed_entity']);
+      $license->set('created', $data['created']);
+      $license->set('default_langcode', $data['default_langcode']);
+      $license->set('field_active', $data['field_active']);
+      $license->set('field_datetime', $data['field_datetime']);
+      $license->set('field_education', $data['field_education']);
+      $license->set('field_standalone', $data['field_standalone']);
+      $license->set('field_teacher_user', $data['field_teacher_user']);
+      $license->set('field_terms', $data['field_terms']);
+      $license->save();
+      return new JsonResponse($this->t('License updated successfully'), 200);
+    }
+    else {
+      return new JsonResponse($this->t('License with id:@id is don`t exist.', ['@id' => $id]), 406);
+    }
+  }
 }
