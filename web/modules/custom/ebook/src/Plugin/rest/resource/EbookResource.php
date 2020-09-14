@@ -228,6 +228,7 @@ class EbookResource extends ResourceBase {
       }
     }
     else {
-      return new JsonResponse($this->t('License id is doesn`t exist. Please add license id'), 200);    }
+      return new JsonResponse($this->t('License id is doesn`t exist. Please add license id'), 406);
+    }
   }
 }
