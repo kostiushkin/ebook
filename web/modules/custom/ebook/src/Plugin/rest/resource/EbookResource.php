@@ -206,33 +206,29 @@ class EbookResource extends ResourceBase {
   }
 
   /**
-   * @param $id
    * @param $data
+   * Provide information for licenses
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function patch($id, $data){
-    $license = $this->entityTypeManager->getStorage('license')->load($id);
-    if (!empty($license)){
-      $license->set('type', $data['type']);
-      $license->set('langcode', $data['langcode']);
-      $license->set('status', $data['status']);
-      $license->set('expires_automatically', $data['expires_automatically']);
-      $license->set('expiry', $data['expiry']);
-      $license->set('licensed_entity', $data['licensed_entity']);
-      $license->set('created', $data['created']);
-      $license->set('default_langcode', $data['default_langcode']);
-      $license->set('field_active', $data['field_active']);
-      $license->set('field_datetime', $data['field_datetime']);
-      $license->set('field_education', $data['field_education']);
-      $license->set('field_standalone', $data['field_standalone']);
-      $license->set('field_teacher_user', $data['field_teacher_user']);
-      $license->set('field_terms', $data['field_terms']);
-      $license->save();
-      return new JsonResponse($this->t('License updated successfully'), 200);
+  public function patch($data){
+    if (!empty($data['id'])) {
+      $license = $this->entityTypeManager->getStorage('license')->load($data['id']);
+      if (!empty($data)) {
+        try {
+          foreach ($data as $field => $value){
+            $license->set($field, $value);
+          }
+          $license->save();
+          return new JsonResponse($this->t('License updated successfully'), 200);
+        }
+        catch (\Exception$exception){
+          return new JsonResponse($exception->getMessage(), 406);
+        }
+      }
     }
     else {
-      return new JsonResponse($this->t('License with id:@id is don`t exist.', ['@id' => $id]), 406);
+      return new JsonResponse($this->t('License id is doesn`t exist. Please add license id'), 406);
     }
   }
 }
