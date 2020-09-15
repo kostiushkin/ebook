@@ -222,13 +222,41 @@ class EbookResource extends ResourceBase {
           $license->save();
           return new JsonResponse($this->t('License updated successfully'), 200);
         }
-        catch (\Exception$exception){
+        catch (\Exception $exception){
           return new JsonResponse($exception->getMessage(), 406);
         }
       }
     }
     else {
       return new JsonResponse($this->t('License id is doesn`t exist. Please add license id'), 406);
+    }
+  }
+
+  /**
+   * @param $id
+   * Get license id
+   * @return JsonResponse
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function delete($id){
+    if (!empty($id)) {
+      $license = $this->entityTypeManager->getStorage('license')->load($id);
+      if (!empty($license)) {
+        try {
+          $license->delete();
+          return new JsonResponse($this->t('License deleted successfully'), 200);
+        }
+        catch(\Exception $exception){
+          return new JsonResponse($exception->getMessage(), 406);
+        }
+      }
+      else {
+        return new JsonResponse($this->t('License doesn`t exist.'), 406);
+      }
+    }
+    else {
+      return new JsonResponse($this->t('License id is doesn`t exist.'), 406);
     }
   }
 }

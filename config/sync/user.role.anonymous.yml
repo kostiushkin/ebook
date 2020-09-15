@@ -12,6 +12,7 @@ permissions:
   - 'access comments'
   - 'access content'
   - 'access site-wide contact form'
+  - 'delete license entities'
   - 'edit license entities'
   - 'restful get get_request'
   - 'restful patch get_request'
