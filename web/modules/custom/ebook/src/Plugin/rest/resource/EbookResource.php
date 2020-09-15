@@ -86,7 +86,7 @@ class EbookResource extends ResourceBase {
   }
 
   /**
-   * Responds to GET requests.
+   *  GET requests for get whole information about license by id.
    *
    * Returns a list of bundles for specified entity.
    *
@@ -144,7 +144,7 @@ class EbookResource extends ResourceBase {
   }
 
   /**
-   * Create new license
+   * POST request for create license by whole fields information.
    *
    * @param $data
    *    Data items
@@ -206,6 +206,8 @@ class EbookResource extends ResourceBase {
   }
 
   /**
+   * PATCH request for change license by id and whole license fields information.
+   *
    * @param $data
    * Provide information for licenses
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -233,6 +235,8 @@ class EbookResource extends ResourceBase {
   }
 
   /**
+   * DELETE request for delete license by id.
+   *
    * @param $id
    * Get license id
    * @return JsonResponse
