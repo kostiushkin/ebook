@@ -1,0 +1,18 @@
+uuid: 5c10aa87-c3e9-4f8f-a89e-59f1fe1f235e
+langcode: en
+status: true
+dependencies:
+  module:
+    - basic_auth
+    - ebook
+    - serialization
+id: owner_id
+plugin_id: owner_id
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - basic_auth
